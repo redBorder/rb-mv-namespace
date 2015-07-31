@@ -29,8 +29,7 @@ object Application {
   def run(config: Config): Unit = {
     implicit lazy val formats = DefaultFormats
 
-    val appName = "moveJob/" + config.topic + "/" + config.source + "/" + config.destination
-    val conf = new SparkConf().setAppName(appName).setMaster("yarn-cluster")
+    val conf = new SparkConf().setAppName("mvnamespace").setMaster("yarn-cluster")
     val sc = new SparkContext(conf)
 
     sc.wholeTextFiles(getFilesURI(config.topic, config.source))
@@ -47,7 +46,7 @@ object Application {
         val json = write(resultMap)
         (x._1, json)
       })
-      .saveAsHadoopFile("/rb/raw/" + appName, classOf[String], classOf[Map[String, String]], classOf[RDDMultipleTextOutputFormat])
+      .saveAsHadoopFile("/rb/raw/" + sc.applicationId, classOf[String], classOf[String], classOf[RDDMultipleTextOutputFormat])
   }
 }
 
