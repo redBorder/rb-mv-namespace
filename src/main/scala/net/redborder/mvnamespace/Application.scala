@@ -2,6 +2,7 @@ package net.redborder.mvnamespace
 
 import net.redborder.mvnamespace.Utils._
 import net.redborder.mvnamespace.Dimension._
+import org.apache.hadoop.io.compress.GzipCodec
 import org.apache.spark.{SparkConf, SparkContext}
 import org.json4s.DefaultFormats
 import org.json4s.jackson.Serialization.write
@@ -33,20 +34,25 @@ object Application {
     val sc = new SparkContext(conf)
 
     sc.wholeTextFiles(getFilesURI(config.topic, config.source))
+      .flatMap(data => {
+        val maps = data._2.split("\n")
+        maps.map(x => (data._1, x, maps.size))
+      })
       .map(data => {
         val parsed = parse(data._2).extract[Map[String, String]]
-        (data._1, parsed)
+        (data._1, data._3, parsed)
       })
       .filter(x => {
-        val sensorName = getString(SENSOR_NAME, x._2)
+        val sensorName = getString(SENSOR_NAME, x._3)
         config.sensors.contains(sensorName)
       })
       .map(x => {
-        val resultMap = x._2 + ("namespace_uuid" -> config.destination)
+        val resultMap = x._3 + ("namespace_uuid" -> config.destination)
         val json = write(resultMap)
-        (x._1, json)
+        val key = getFilename(x._1, x._2, config)
+        (key, json)
       })
-      .saveAsHadoopFile("/rb/raw/" + sc.applicationId, classOf[String], classOf[String], classOf[RDDMultipleTextOutputFormat])
+      .saveAsHadoopFile("/rb/raw/moved/" + sc.applicationId, classOf[String], classOf[String], classOf[RDDMultipleTextOutputFormat], classOf[GzipCodec])
   }
 }
 

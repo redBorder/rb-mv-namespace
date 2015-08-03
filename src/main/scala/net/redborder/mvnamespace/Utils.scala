@@ -7,6 +7,16 @@ object Utils {
     filesURIPattern.format(topic, namespace)
   }
 
+  def getFilename(baseFilename: String, eventsCount: Int, config: Config): String = {
+    var filename = baseFilename.replaceAll("/data/([a-zA-Z0-9_]+)/(\\d+)/hourly", "/data/$1/" + config.destination + "/hourly")
+    filename = filename.replaceAll(".gz", "")
+    val fileTokens = filename.split('.')
+    fileTokens(5) = eventsCount.toString
+    fileTokens(6) = "movedFrom"
+    fileTokens(7) = config.source
+    fileTokens.mkString(".")
+  }
+
   // TODO: These fields are not checked and are unsafely casted! Refactor that!
 
   def getString(key: String, data: Map[String, String]) : String = {
