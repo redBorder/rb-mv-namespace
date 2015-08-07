@@ -7,7 +7,7 @@
     <version>0.0.2-SNAPSHOT</version>
 
     <scm>
-      <developerConnection>scm:git:git@gitlab.redborder.lan:crodriguez/rb-mv-namespace.git</developerConnection>
+      <developerConnection>scm:git:git@gitlab.redborder.lan:bigdata/rb-mv-namespace.git</developerConnection>
       <tag>HEAD</tag>
     </scm>
 
