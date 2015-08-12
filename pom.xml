@@ -4,11 +4,11 @@
 
     <groupId>net.redborder</groupId>
     <artifactId>rb-mv-namespace</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2</version>
 
     <scm>
       <developerConnection>scm:git:git@gitlab.redborder.lan:bigdata/rb-mv-namespace.git</developerConnection>
-      <tag>HEAD</tag>
+      <tag>rb-mv-namespace-0.0.2</tag>
     </scm>
 
     <dependencies>
