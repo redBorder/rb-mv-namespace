@@ -16,8 +16,8 @@ object Application {
       opt[String]('n', "source") action { (x, c) => c.copy(source = x) }
       opt[String]('d', "destination") required() action { (x, c) => c.copy(destination = x) }
       opt[String]('t', "topic") action { (x, c) => c.copy(topic = x) }
-      opt[Seq[String]]('s', "sensor") required() valueName "<sensor1>,<sensor2>..." action {
-        (x, c) => c.copy(sensors = x) } text "sensors to move"
+      opt[Seq[String]]('s', "sensor_uuid") required() valueName "<sensorUUID_1>,<sensorUUID_2>..." action {
+        (x, c) => c.copy(sensors = x) } text "sensors_uuid to move"
     }
 
     parser.parse(args, Config()) match {
@@ -43,8 +43,8 @@ object Application {
         (data._1, data._3, parsed)
       })
       .filter(x => {
-        val sensorName = getString(SENSOR_NAME, x._3)
-        config.sensors.contains(sensorName)
+        val sensorUUID = getString(SENSOR_UUID, x._3)
+        config.sensors.contains(sensorUUID)
       })
       .map(x => {
         val resultMap = x._3 + ("namespace_uuid" -> config.destination)
